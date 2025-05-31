@@ -79,7 +79,7 @@ function App() {
             </RequireAuth>
           }
         >
-          <Route index element={<LandingPage />} />
+          <Route index element={<LandingPage/>} />
         </Route>
 
         {/* Redirect unknown routes to /login */}
