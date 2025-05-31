@@ -1,0 +1,117 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRegisterMutation } from '../../api/authApi';
+import { toast } from 'react-toastify';
+
+
+const Signup = () => {
+    const navigate = useNavigate();
+  const [registerUser, {
+    isLoading: registerIsLoading,
+    isSuccess: registerIsSuccess,
+  }] = useRegisterMutation();
+
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+useEffect(() => {
+  if (registerIsSuccess) {
+    fetch('http://localhost:8080/api/auth/me', {
+      method: 'GET',
+      credentials: 'include',
+    }).then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          navigate('/'); 
+          console.log("navigating to   /")
+        } else {
+          navigate('/login');
+        }
+      });
+  }
+}, [registerIsSuccess]);
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await registerUser({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+    }).unwrap();
+    // Navigation and toast are handled in useEffect
+  } catch {
+    // Error is handled in useEffect
+  }
+};
+
+
+ 
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 w-screen">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8"
+      >
+        <h2 className="text-3xl font-semibold text-center text-gray-800 dark:text-white mb-6">
+          Create an Account 🚀
+        </h2>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Full Name
+          </label>
+          <input
+            type="text"
+            placeholder="John Doe"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Email Address
+          </label>
+          <input
+            type="email"
+            placeholder="you@example.com"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Password
+          </label>
+          <input
+            type="password"
+            placeholder="••••••••"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 text-black dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full py-3 text-white bg-secondary hover:bg-secondary-dark transition-colors duration-300 rounded-lg font-semibold"
+          disabled={registerIsLoading}
+        >
+          {registerIsLoading ? "Signing Up..." : "Sign Up"}
+        </button>
+
+        <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+          Already have an account? <a href="/login" className="text-secondary font-medium hover:underline">Login</a>
+        </p>
+      </form>
+    </div>
+  );
+};
+
+export default Signup;
