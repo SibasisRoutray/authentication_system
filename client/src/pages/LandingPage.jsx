@@ -1,11 +1,11 @@
-import Hero from "../component/Hero";
+import React from 'react'
 
-const LandingPage = () => {
+function LandingPage() {
   return (
-    <main>
+   <main>
       <Hero />
     </main>
-  );
-};
+  )
+}
 
-export default LandingPage;
+export default LandingPage

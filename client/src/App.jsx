@@ -9,7 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { login, logout } from './store/authSlice';
-import LandingPage from './pages/Landingpage';
+import LandingPage from './pages/LandingPage';
 
 function App() {
 
