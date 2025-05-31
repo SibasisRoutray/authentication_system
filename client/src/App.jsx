@@ -4,11 +4,12 @@ import SignupPage from './pages/SignupPage';
 import PublicLayout from './layout/PublicLayout';
 import AuthLayout from './layout/AuthLayout';
 import RequireAuth from './component/auth/RequireAuth';
-import LandingPage from './pages/Landingpage';
+
 import { ToastContainer } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { login, logout } from './store/authSlice';
+import LandingPage from './pages/Landingpage';
 
 function App() {
 
