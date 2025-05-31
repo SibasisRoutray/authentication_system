@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '../../api/authApi';
 import { toast } from 'react-toastify';
 
-
 const Signup = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
   const [registerUser, {
     isLoading: registerIsLoading,
     isSuccess: registerIsSuccess,
@@ -16,44 +16,62 @@ const Signup = () => {
     email: '',
     password: '',
   });
-useEffect(() => {
-  if (registerIsSuccess) {
-    fetch('http://localhost:8080/api/auth/me', {
-      method: 'GET',
-      credentials: 'include',
-    }).then(res => res.json())
-      .then(data => {
-        if (data.user) {
-          navigate('/'); 
-          console.log("navigating to   /")
-        } else {
-          navigate('/login');
-        }
-      });
-  }
-}, [registerIsSuccess]);
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    await registerUser({
-      name: form.name,
-      email: form.email,
-      password: form.password,
-    }).unwrap();
+  useEffect(() => {
+    if (registerIsSuccess) {
+      toast.success("Registration successful! 🎉");
+
+      
+      setTimeout(() => {
+        fetch('http://localhost:8080/api/auth/me', {
+          method: 'GET',
+          credentials: 'include',
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.user) {
+              navigate('/');
+              console.log("Navigating to /");
+            } else {
+              navigate('/login');
+            }
+          })
+          .catch(err => {
+            console.error("Error fetching user:", err);
+            toast.error("Something went wrong while verifying login.");
+            navigate('/login');
+          });
+      }, 1000);
+    }
+  }, [registerIsSuccess]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     
-  } catch {
-    console.log("something went wrong");
-  }
-};
+    if (!form.name || !form.email || !form.password) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
 
+    try {
+      await registerUser({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      }).unwrap();
+    } catch (err) {
+      console.error("Registration error:", err);
+      toast.error(err?.data?.message || "Registration failed. Try again.");
+    }
+  };
 
- 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 w-screen">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8"
+        autoComplete="off"
       >
         <h2 className="text-3xl font-semibold text-center text-gray-800 dark:text-white mb-6">
           Create an Account 🚀
@@ -107,7 +125,8 @@ useEffect(() => {
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-          Already have an account? <a href="/login" className="text-secondary font-medium hover:underline">Login</a>
+          Already have an account?{" "}
+          <a href="/login" className="text-secondary font-medium hover:underline">Login</a>
         </p>
       </form>
     </div>
