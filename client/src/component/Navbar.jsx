@@ -12,7 +12,7 @@ const Navbar = () => {
     try {
       await triggerLogout();
     } catch (err) {
-      // Optional: handle logout error if needed
+    
       console.error('Logout error:', err);
     }
   };

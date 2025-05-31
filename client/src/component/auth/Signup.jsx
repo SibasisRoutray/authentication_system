@@ -41,9 +41,9 @@ useEffect(() => {
       email: form.email,
       password: form.password,
     }).unwrap();
-    // Navigation and toast are handled in useEffect
+    
   } catch {
-    // Error is handled in useEffect
+    console.log("something went wrong");
   }
 };
 

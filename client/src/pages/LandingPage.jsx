@@ -1,4 +1,4 @@
-// src/pages/LandingPage.jsx
+
 import React from "react";
 import Hero from "../component/Hero";
 

@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import {login, logout} from '../store/authSlice';  // Import logout action too
+import {login, logout} from '../store/authSlice'; 
 const USER_API_URL = 'http://localhost:8080/api/auth';
 import { toast } from 'react-toastify';
 
@@ -38,7 +38,7 @@ export const authApi = createApi({
             async onQueryStarted(arg, {dispatch, queryFulfilled}) {
                 try {
                     await queryFulfilled;
-                    dispatch(logout());  // Clear redux state on success
+                    dispatch(logout());  
                 } catch (error) {
                     console.error('Logout failed:', error);
                     toast.error(error?.data?.message || "Logout failed");

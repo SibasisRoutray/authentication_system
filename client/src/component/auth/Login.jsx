@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../api/authApi';
- import { toast } from 'react-toastify'; // Uncomment if using toast
+ import { toast } from 'react-toastify'; 
 
 const Login = () => {
   const [email, setEmail] = useState('');

@@ -19,10 +19,10 @@ app.use('/api/auth', authRoutes);
 
 // Call connectDB and then start the server
 const startServer = async () => {
-  await connectDB(); // 👈 Establish DB connection first
+  await connectDB(); 
   app.listen(8080, () => {
     console.log('Server running on port 8080');
   });
 };
 
-startServer(); // 👈 Start the app
+startServer();
