@@ -4,56 +4,56 @@ import { useRegisterMutation } from '../../api/authApi';
 import { toast } from 'react-toastify';
 
 const Signup = () => {
-
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  
   const navigate = useNavigate();
 
-  const [registerUser, {
-    isLoading: registerIsLoading,
-    isSuccess: registerIsSuccess,
-  }] = useRegisterMutation();
+  const [registerUser, { isLoading: registerIsLoading, isSuccess: registerIsSuccess, isError: registerIsError, error }] = useRegisterMutation();
 
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
 
+  // After successful registration, fetch user info immediately
   useEffect(() => {
     if (registerIsSuccess) {
-      toast.success("Registration successful! 🎉");
+      toast.success('Registration successful! 🎉');
 
-      
-      setTimeout(() => {
-        fetch(`${API_BASE_URL}/api/auth/me`, {
-          method: 'GET',
-          credentials: 'include',
+      // Fetch logged-in user data immediately after success
+      fetch(`${API_BASE_URL}/api/auth/me`, {
+        method: 'GET',
+        credentials: 'include', // very important to send cookies
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            // If 401 or other error
+            const errData = await res.json();
+            throw new Error(errData.message || 'Failed to verify user.');
+          }
+          return res.json();
         })
-          .then(res => res.json())
-          .then(data => {
-            if (data.user) {
-              navigate('/');
-              console.log("Navigating to /");
-            } else {
-              navigate('/login');
-            }
-          })
-          .catch(err => {
-            console.error("Error fetching user:", err);
-            toast.error("Something went wrong while verifying login.");
+        .then((data) => {
+          if (data.user) {
+            navigate('/');
+            console.log('Navigating to /');
+          } else {
+            toast.error('User not authenticated after registration.');
             navigate('/login');
-          });
-      }, 1000);
+          }
+        })
+        .catch((err) => {
+          console.error('Error fetching user:', err);
+          toast.error('Something went wrong while verifying login.');
+          navigate('/login');
+        });
     }
   }, [registerIsSuccess]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    
     if (!form.name || !form.email || !form.password) {
-      toast.error("Please fill in all fields.");
+      toast.error('Please fill in all fields.');
       return;
     }
 
@@ -64,8 +64,8 @@ const Signup = () => {
         password: form.password,
       }).unwrap();
     } catch (err) {
-      console.error("Registration error:", err);
-      toast.error(err?.data?.message || "Registration failed. Try again.");
+      console.error('Registration error:', err);
+      toast.error(err?.data?.message || 'Registration failed. Try again.');
     }
   };
 
@@ -124,12 +124,14 @@ const Signup = () => {
           className="w-full py-3 text-white bg-secondary hover:bg-secondary-dark transition-colors duration-300 rounded-lg font-semibold"
           disabled={registerIsLoading}
         >
-          {registerIsLoading ? "Signing Up..." : "Sign Up"}
+          {registerIsLoading ? 'Signing Up...' : 'Sign Up'}
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-          Already have an account?{" "}
-          <a href="/login" className="text-secondary font-medium hover:underline">Login</a>
+          Already have an account?{' '}
+          <a href="/login" className="text-secondary font-medium hover:underline">
+            Login
+          </a>
         </p>
       </form>
     </div>
