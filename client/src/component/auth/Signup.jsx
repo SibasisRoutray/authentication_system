@@ -1,56 +1,51 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useRegisterMutation } from '../../api/authApi';
-import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import { login } from '../../store/authSlice';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRegisterMutation } from "../../api/authApi";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/authSlice";
 
 const Signup = () => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
-  const [registerUser, { isLoading: registerIsLoading }] = useRegisterMutation();
+  const [registerUser, { isLoading: registerIsLoading }] =
+    useRegisterMutation();
 
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
 
- const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
- const handleLoginAfterSignup = async () => {
+  const handleLoginAfterSignup = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: form.email, password: form.password }),
       });
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || 'Login failed');
+        throw new Error(errorData.message || "Login failed");
       }
 
       const data = await res.json();
-      console.log('Login response user:', data.user);
-      
-      dispatch(login({ user: data.user })); // Update redux state here
-      console.log('Dispatched login action with user:', data.user);
-      
-      toast.success('Logged in successfully! 🎉');
-      navigate('/');
+
+      dispatch(login({ user: data.user }));
+      navigate("/");
     } catch (err) {
-      console.error('Login after signup error:', err);
-      toast.error(err.message || 'Login failed after signup');
-      navigate('/login');
+      console.error("signup failed", err);
+      toast.error(err.message || "signup failed  ");
+      navigate("/login");
     }
   };
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!form.name || !form.email || !form.password) {
-      toast.error('Please fill in all fields.');
+      toast.error("Please fill in all fields.");
       return;
     }
 
@@ -61,13 +56,13 @@ const Signup = () => {
         password: form.password,
       }).unwrap();
 
-      toast.success('Registration successful! Logging you in...');
+      toast.success("Registration successful! Logging you in...");
 
       // Auto login after successful signup
       await handleLoginAfterSignup();
     } catch (err) {
-      console.error('Registration error:', err);
-      toast.error(err?.data?.message || 'Registration failed. Try again.');
+      console.error("Registration error:", err);
+      toast.error(err?.data?.message || "Registration failed. Try again.");
     }
   };
 
@@ -126,12 +121,15 @@ const Signup = () => {
           className="w-full py-3 text-white bg-secondary hover:bg-secondary-dark transition-colors duration-300 rounded-lg font-semibold"
           disabled={registerIsLoading}
         >
-          {registerIsLoading ? 'Signing Up...' : 'Sign Up'}
+          {registerIsLoading ? "Signing Up..." : "Sign Up"}
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-          Already have an account?{' '}
-          <a href="/login" className="text-secondary font-medium hover:underline">
+          Already have an account?{" "}
+          <a
+            href="/login"
+            className="text-secondary font-medium hover:underline"
+          >
             Login
           </a>
         </p>
