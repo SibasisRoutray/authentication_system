@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.CLIENT_URL,
   credentials: true,
 }));
 app.use(cookieParser());
@@ -20,9 +20,11 @@ app.use('/api/auth', authRoutes);
 // Call connectDB and then start the server
 const startServer = async () => {
   await connectDB(); 
-  app.listen(8080, () => {
-    console.log('Server running on port 8080');
-  });
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 };
 
 startServer();
