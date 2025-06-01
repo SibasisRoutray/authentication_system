@@ -11,34 +11,34 @@ const Signup = () => {
 
   const [form, setForm] = useState({ name: '', email: '', password: '' });
 
-  const handleLoginAfterSignup = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        credentials: 'include', // important for cookies
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: form.email, password: form.password }),
-      });
+  // Suppose you have an auth context
+const { setUser } = useAuth();
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'Login failed');
-      }
+const handleLoginAfterSignup = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: form.email, password: form.password }),
+    });
 
-      const data = await res.json();
-      if(data){
-         toast.success('Logged in successfully! 🎉');
-      navigate('/'); // Redirect after login
-      return;
-      }
-     
-    } catch (err) {
-      toast.error(err.message || 'Login failed after signup');
-      navigate('/login'); // fallback to login page
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || 'Login failed');
     }
-  };
+
+    const data = await res.json();
+    setUser(data.user);  // update auth state here
+    toast.success('Logged in successfully! 🎉');
+    navigate('/');
+  } catch (err) {
+    toast.error(err.message || 'Login failed after signup');
+    navigate('/login');
+  }
+};
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
