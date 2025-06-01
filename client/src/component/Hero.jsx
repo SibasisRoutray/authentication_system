@@ -9,7 +9,7 @@ const Hero = () => {
        <img
     src="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1DgIgf.img?w=768&h=432&m=6&x=546&y=62&s=58&d=58"
     alt="Cup Image"
-    className="mb-6 w-full h-full sm:w-full sm:h-full md:w-56 md:h-56 lg:w-64 lg:h-64 object-contain"
+    className="mb-6 w-screen h-screen sm:w-full sm:h-full md:w-56 md:h-56 lg:w-64 lg:h-64 object-contain"
   />
     </section>
   );
