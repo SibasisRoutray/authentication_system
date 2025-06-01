@@ -28,8 +28,11 @@ const Signup = () => {
       }
 
       const data = await res.json();
-      toast.success('Logged in successfully! 🎉');
+      if(data){
+         toast.success('Logged in successfully! 🎉');
       navigate('/'); // Redirect after login
+      }
+     
     } catch (err) {
       toast.error(err.message || 'Login failed after signup');
       navigate('/login'); // fallback to login page
