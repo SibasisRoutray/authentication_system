@@ -7,47 +7,34 @@ const Signup = () => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
-  const [registerUser, { isLoading: registerIsLoading, isSuccess: registerIsSuccess, isError: registerIsError, error }] = useRegisterMutation();
+  const [registerUser, { isLoading: registerIsLoading }] = useRegisterMutation();
 
   const [form, setForm] = useState({ name: '', email: '', password: '' });
 
-  // After successful registration, fetch user info immediately
-  useEffect(() => {
-    if (registerIsSuccess) {
-      toast.success('Registration successful! 🎉');
-
-      // Fetch logged-in user data immediately after success
-      fetch(`${API_BASE_URL}/api/auth/me`, {
-        method: 'GET',
-        credentials: 'include', // very important to send cookies
+  const handleLoginAfterSignup = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        credentials: 'include', // important for cookies
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            // If 401 or other error
-            const errData = await res.json();
-            throw new Error(errData.message || 'Failed to verify user.');
-          }
-          return res.json();
-        })
-        .then((data) => {
-          if (data.user) {
-            navigate('/');
-            console.log('Navigating to /');
-          } else {
-            toast.error('User not authenticated after registration.');
-            navigate('/login');
-          }
-        })
-        .catch((err) => {
-          console.error('Error fetching user:', err);
-          toast.error('Something went wrong while verifying login.');
-          navigate('/login');
-        });
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+
+      const data = await res.json();
+      toast.success('Logged in successfully! 🎉');
+      navigate('/'); // Redirect after login
+    } catch (err) {
+      toast.error(err.message || 'Login failed after signup');
+      navigate('/login'); // fallback to login page
     }
-  }, [registerIsSuccess]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,6 +50,11 @@ const Signup = () => {
         email: form.email,
         password: form.password,
       }).unwrap();
+
+      toast.success('Registration successful! Logging you in...');
+
+      // Auto login after successful signup
+      await handleLoginAfterSignup();
     } catch (err) {
       console.error('Registration error:', err);
       toast.error(err?.data?.message || 'Registration failed. Try again.');
