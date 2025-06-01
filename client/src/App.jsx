@@ -47,7 +47,7 @@ function App() {
 
   // Wait until auth check completes before rendering routes
   if (!isAuthChecked) {
-    return <div>Loading...</div>;
+    return <div className='bg-white'></div>;
   }
 
   return (
