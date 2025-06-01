@@ -56,7 +56,7 @@ const Signup = () => {
         password: form.password,
       }).unwrap();
 
-      toast.success("Registration successful! Logging you in...");
+      toast.success("Registration successful.");
 
       // Auto login after successful signup
       await handleLoginAfterSignup();
