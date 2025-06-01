@@ -31,6 +31,7 @@ const Signup = () => {
       if(data){
          toast.success('Logged in successfully! 🎉');
       navigate('/'); // Redirect after login
+      return;
       }
      
     } catch (err) {
