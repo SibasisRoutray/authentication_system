@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '../../api/authApi';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/authSlice';
 
 const Signup = () => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -11,32 +13,36 @@ const Signup = () => {
 
   const [form, setForm] = useState({ name: '', email: '', password: '' });
 
-  // Suppose you have an auth context
-const { setUser } = useAuth();
+ const dispatch = useDispatch();
 
-const handleLoginAfterSignup = async () => {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: form.email, password: form.password }),
-    });
+ const handleLoginAfterSignup = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || 'Login failed');
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+
+      const data = await res.json();
+      console.log('Login response user:', data.user);
+      
+      dispatch(login({ user: data.user })); // Update redux state here
+      console.log('Dispatched login action with user:', data.user);
+      
+      toast.success('Logged in successfully! 🎉');
+      navigate('/');
+    } catch (err) {
+      console.error('Login after signup error:', err);
+      toast.error(err.message || 'Login failed after signup');
+      navigate('/login');
     }
-
-    const data = await res.json();
-    setUser(data.user);  // update auth state here
-    toast.success('Logged in successfully! 🎉');
-    navigate('/');
-  } catch (err) {
-    toast.error(err.message || 'Login failed after signup');
-    navigate('/login');
-  }
-};
+  };
 
 
 
