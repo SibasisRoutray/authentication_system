@@ -16,10 +16,10 @@ function App() {
   
    const dispatch = useDispatch();
   const [isAuthChecked, setIsAuthChecked] = useState(false);
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-  fetch('http://localhost:8080/api/auth/me', { credentials: 'include' })
+  fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' })
     .then(res => {
       console.log('Auth check response:', res.status);
       if (!res.ok) throw new Error('Not authenticated');

@@ -1,6 +1,7 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {login, logout} from '../store/authSlice'; 
-const USER_API_URL = 'http://localhost:8080/api/auth';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const USER_API_URL = `${API_BASE_URL}/api/auth`;
 import { toast } from 'react-toastify';
 
 export const authApi = createApi({

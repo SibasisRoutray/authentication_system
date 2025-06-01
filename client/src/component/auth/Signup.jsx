@@ -4,6 +4,9 @@ import { useRegisterMutation } from '../../api/authApi';
 import { toast } from 'react-toastify';
 
 const Signup = () => {
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
   const navigate = useNavigate();
 
   const [registerUser, {
@@ -23,7 +26,7 @@ const Signup = () => {
 
       
       setTimeout(() => {
-        fetch('http://localhost:8080/api/auth/me', {
+        fetch(`{API_BASE_URL}/api/auth/me`, {
           method: 'GET',
           credentials: 'include',
         })
