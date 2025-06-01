@@ -26,7 +26,7 @@ const Signup = () => {
 
       
       setTimeout(() => {
-        fetch(`{API_BASE_URL}/api/auth/me`, {
+        fetch(`${API_BASE_URL}/api/auth/me`, {
           method: 'GET',
           credentials: 'include',
         })
